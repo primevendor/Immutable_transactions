@@ -1,6 +1,6 @@
 # Immutable_transactions
-for both frontend and backend write cd Project_folder in terminal first as our folder name is Project_folder 
-r
+for both frontend and backend first write cd Project_folder in terminal as our folder name is Project_folder 
+
 Frontend :
 Open terminal and type cd frontend in terminal
 
