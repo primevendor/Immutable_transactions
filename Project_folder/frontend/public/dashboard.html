@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .header {
+            background-color: hsl(187, 39%, 49%);
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+        .container {
+            margin: 20px;
+        }
+        .btn {
+            padding: 8px 15px;
+            background-color: hsl(192, 39%, 49%);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 5px;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: hsl(188, 40%, 45%);
+        }
+        .notification-list, .acknowledgement-list {
+            margin-top: 20px;
+            display: none;
+        }
+        .show-notifications, .show-acknowledgements {
+            display: block;
+        }
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: hsl(188, 39%, 49%);
+            color: white;
+        }
+        .section-title {
+            margin-top: 30px;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>Dashboard</h1>
+</div>
+
+<div class="container">
+    <h2>Welcome, Divya Jyothi Vasa!</h2>
+
+    <p>Manage your transactions and acknowledgements below:</p>
+
+    <button class="btn" onclick="window.location.href='transaction-history.html'">Go to Transaction History</button>
+    <button class="btn" onclick="window.location.href='create-transaction.html'">Send New Acknowledgement</button>
+
+    <button class="btn" onclick="toggleNotifications()">View Notifications</button>
+    <button class="btn" onclick="toggleAcknowledgements()">View Acknowledgements</button>
+
+    <div id="notification-section" class="section-title">Recent Notifications</div>
+    <div id="notification-list" class="notification-list"> 
+        <table>
+            <thead>
+                <tr>
+                    <th>Notification ID</th>
+                    <th>Timestamp</th>
+                    <th>Message</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="acknowledgement-section" class="section-title">Recent Acknowledgements Received</div>
+    <div id="acknowledgement-list" class="acknowledgement-list">
+        <table>
+            <thead>
+                <tr>
+                    <th>Acknowledgement ID</th>
+                    <th>Timestamp</th>
+                    <th>Data</th>
+                    <th style="text-align: center;">Action</th> 
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+     <div class="section-title">Recent Transactions</div>
+    <div class="transaction-list">
+        <table>
+            <thead>
+                <tr>
+                    <th>Transaction ID</th>
+                    <th>Timestamp</th>
+                    <th>Data</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="transaction-list">
+                <!-- Recent transactions will be dynamically added here -->
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<script>
+    const transactions = [
+        { id: 'T001', timestamp: '2025-01-20 12:30', data: 'Payment of Rs. 50000 to vijay', hash: 'abc123hash', status: 'Accepted' },
+        { id: 'T002', timestamp: '2025-01-21 14:20', data: 'Payment of Rs.5000 to vijay', hash: 'def456hash', status: 'Denied' },
+        { id: 'T003', timestamp: '2025-01-22 10:00', data: 'Payment of Rs. 2000 to vijay', hash: 'ghi789hash', status: 'Accepted' },
+        { id: 'T004', timestamp: '2025-01-22 16:15', data: 'Payment of Rs.2000 to vijay', hash: 'jkl101hash', status: 'Accepted' },
+        { id: 'T001', timestamp: '2025-01-24 12:30', data: 'Payment of Rs. 50000 to vijay', hash: 'abc123hash', status: 'Accepted' },
+        { id: 'T002', timestamp: '2025-01-24 14:20', data: 'Payment of Rs.5000 to vijay', hash: 'def456hash', status: 'Denied' },
+        { id: 'T003', timestamp: '2025-01-25 10:00', data: 'Payment of Rs. 2000 to vijay', hash: 'ghi789hash', status: 'Accepted' },
+        { id: 'T004', timestamp: '2025-01-25 16:15', data: 'Payment of Rs.2000 to vijay', hash: 'jkl101hash', status: 'Accepted' },
+        { id: 'T001', timestamp: '2025-01-26 12:30', data: 'Payment of Rs. 50000 to vijay', hash: 'abc123hash', status: 'Accepted' },
+        { id: 'T002', timestamp: '2025-01-26 14:20', data: 'Payment of Rs.5000 to vijay', hash: 'def456hash', status: 'Denied' },
+        { id: 'T003', timestamp: '2025-01-27 10:00', data: 'Payment of Rs. 2000 to vijay', hash: 'ghi789hash', status: 'Accepted' },
+        { id: 'T004', timestamp: '2025-01-27 16:15', data: 'Payment of Rs.2000 to vijay', hash: 'jkl101hash', status: 'Accepted' },
+        { id: 'T001', timestamp: '2025-01-28 12:30', data: 'Payment of Rs. 50000 to vijay', hash: 'abc123hash', status: 'Accepted' },
+        { id: 'T002', timestamp: '2025-01-28 14:20', data: 'Payment of Rs.5000 to vijay', hash: 'def456hash', status: 'Denied' },
+        { id: 'T003', timestamp: '2025-01-29 10:00', data: 'Payment of Rs. 2000 to vijay', hash: 'ghi789hash', status: 'Accepted' },
+        { id: 'T004', timestamp: '2025-01-29 16:15', data: 'Payment of Rs.2000 to vijay', hash: 'jkl101hash', status: 'Accepted' }
+
+    ];
+
+
+    // Function to display recent transactions on the dashboard
+    function displayTransactions() {
+        const transactionList = document.getElementById('transaction-list');
+        transactionList.innerHTML = ''; // Clear the previous list
+
+        // Show first 3 transactions for demo
+        transactions.slice(0, 3).forEach(transaction => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${transaction.id}</td>
+                <td>${transaction.timestamp}</td>
+                <td>${transaction.data}</td>
+                <td>${transaction.status}</td>
+            `;
+            transactionList.appendChild(row);
+        });
+    }
+
+    // Call the display function on page load
+    displayTransactions();
+    // Sample notifications for demonstration
+    const notifications = [
+        { id: 'N001', timestamp: '2025-01-20 12:30', message: 'New transaction received from John Doe' },
+        { id: 'N002', timestamp: '2025-01-21 14:20', message: 'Acknowledgement for transaction ID: TX123 sent successfully' },
+        { id: 'N003', timestamp: '2025-01-22 10:00', message: 'New payment received from Jane Smith' }
+    ];
+
+    // Sample acknowledgements for demonstration
+    const acknowledgements = [
+        { id: 'ACK001', timestamp: '2025-01-20 12:30', data: 'Payment of Rs. 5000 received', hash: 'abc123hash', status: 'Pending' },
+        { id: 'ACK002', timestamp: '2025-01-21 14:20', data: 'Payment of Rs. 2000 received', hash: 'def456hash', status: 'Pending' },
+        { id: 'ACK003', timestamp: '2025-01-22 10:00', data: 'Payment of Rs. 1000 received', hash: 'ghi789hash', status: 'Pending' },
+        { id: 'ACK004', timestamp: '2025-01-22 16:15', data: 'Payment of Rs. 500 received', hash: 'jkl101hash', status: 'Pending' }
+    ];
+
+    function displayNotifications() {
+        const notificationList = document.getElementById('notification-list');
+        notificationList.innerHTML = '';
+
+        notifications.slice(0, 3).forEach(notification => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${notification.id}</td>
+                <td>${notification.timestamp}</td>
+                <td>${notification.message}</td>
+            `;
+            notificationList.appendChild(row);
+        });
+    }
+
+    function displayAcknowledgements() {
+        const acknowledgementList = document.getElementById('acknowledgement-list');
+        acknowledgementList.innerHTML = '';
+
+        acknowledgements.forEach(acknowledgement => { 
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${acknowledgement.id}</td>
+                <td>${acknowledgement.timestamp}</td>
+                <td>${acknowledgement.data}</td>
+                <td style="text-align: center;">
+                    <button class="btn" onclick="acceptAcknowledgement('${acknowledgement.id}')">Accept</button>
+                    <button class="btn" onclick="denyAcknowledgement('${acknowledgement.id}')">Deny</button>
+                </td>
+            `;
+            acknowledgementList.appendChild(row);
+        });
+    }
+
+    function toggleNotifications() {
+        const notificationList = document.getElementById('notification-list');
+        const notificationSection = document.getElementById('notification-section');
+
+        notificationList.classList.toggle('show-notifications');
+        notificationSection.classList.toggle('show-notifications'); 
+    }
+
+    function toggleAcknowledgements() {
+        const acknowledgementList = document.getElementById('acknowledgement-list');
+        const acknowledgementSection = document.getElementById('acknowledgement-section');
+
+        acknowledgementList.classList.toggle('show-acknowledgements');
+        acknowledgementSection.classList.toggle('show-acknowledgements'); 
+    }
+
+    function acceptAcknowledgement(acknowledgementId) {
+        // Replace this with actual server-side logic to update acknowledgement status
+        alert('Acknowledgement ' + acknowledgementId + ' accepted.');
+    }
+
+    function denyAcknowledgement(acknowledgementId) {
+        // Replace this with actual server-side logic to update acknowledgement status
+        alert('Acknowledgement ' + acknowledgementId + ' denied.');
+    }
+
+    displayAcknowledgements(); 
+</script>
+
+</body>
+</html>

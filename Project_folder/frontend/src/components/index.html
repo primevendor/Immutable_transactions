@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login & Registration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+        .container {
+            max-width: 400px;
+            margin: 50px auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .form-container {
+            margin-bottom: 20px;
+        }
+        .form-container label {
+            font-size: 16px;
+            margin-bottom: 5px;
+            display: block;
+        }
+        .form-container input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .form-container button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .form-container button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Login to Your Account</h1>
+    </div>
+
+    <!-- Login Page -->
+    <div id="login-page" class="container">
+        <h2>Login</h2>
+        <div class="form-container">
+            <label for="email">Email</label>
+            <input type="email" id="login-email" placeholder="Enter your email" required>
+
+            <label for="password">Password</label>
+            <input type="password" id="login-password" placeholder="Enter your password" required>
+
+            <button id="login-btn">Login</button>
+        </div>
+        <p>Don't have an account? <a href="#" onclick="showRegistrationPage()">Register Now</a></p>
+    </div>
+
+    <!-- Registration Page -->
+    <div id="registration-page" class="container" style="display: none;">
+        <h2>Register</h2>
+        <div class="form-container">
+            <label for="name">Full Name</label>
+            <input type="text" id="reg-name" placeholder="Enter your full name" required>
+
+            <label for="email">Email</label>
+            <input type="email" id="reg-email" placeholder="Enter your email" required>
+
+            <label for="username">Username</label>
+            <input type="text" id="reg-username" placeholder="Enter your username" required>
+
+            <label for="password">Password</label>
+            <input type="password" id="reg-password" placeholder="Enter your password" required>
+
+            <label for="confirm_password">Confirm Password</label>
+            <input type="password" id="reg-confirm-password" placeholder="Confirm your password" required>
+
+            <button id="register-btn">Register</button>
+        </div>
+        <p>Already have an account? <a href="#" onclick="showLoginPage()">Login</a></p>
+    </div>
+
+    <script>
+        // Show the login page
+        function showLoginPage() {
+            document.getElementById('login-page').style.display = 'block';
+            document.getElementById('registration-page').style.display = 'none';
+        }
+
+        // Show the registration page
+        function showRegistrationPage() {
+            document.getElementById('login-page').style.display = 'none';
+            document.getElementById('registration-page').style.display = 'block';
+        }
+
+        showLoginPage();
+
+        // Login functionality
+        document.getElementById('login-btn').addEventListener('click', async function () {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            const correctEmail = 'divyajyothi@gmail.com';
+            const correctPassword = 'divya';
+
+            if (email === correctEmail && password === correctPassword) {
+                alert('Login successful!');
+                window.location.href = 'dashboard1.html'; // Redirect to dashboard page
+            } else {
+                alert('Invalid email or password. Please try again.');
+            }
+        });
+
+        // Registration functionality
+        document.getElementById('register-btn').addEventListener('click', async function () {
+            const name = document.getElementById('reg-name').value;
+            const email = document.getElementById('reg-email').value;
+            const username = document.getElementById('reg-username').value;
+            const password = document.getElementById('reg-password').value;
+            const confirmPassword = document.getElementById('reg-confirm-password').value;
+
+            // Check if passwords match
+            if (password !== confirmPassword) {
+                alert('Passwords do not match. Please try again.');
+                return;
+            }
+
+            // Send registration data to the server
+            try {
+                const response = await fetch('http://localhost:3000/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, username, password }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert('Registration successful! Please log in.');
+                    showLoginPage();
+                } else {
+                    alert(data.error || 'Registration failed');
+                }
+            } catch (error) {
+                alert('Error registering. Please try again.');
+            }
+        });
+    </script>
+
+</body>
+</html>
